@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 
+import 'package:cultura/model/event.dart';
+
 import 'package:cultura/main.dart';
+import 'package:cultura/register_participant.dart';
 
 class ViewEventWidget extends StatefulWidget {
+  //Properties
+  final Event event;
+
+  //Constructors
+  ViewEventWidget({this.event});
+
+  //Methods
   @override
   _ViewEventWidget createState() {
-    return _ViewEventWidget();
+    return _ViewEventWidget(
+      event: this.event,
+    );
   }
 }
 
 class _ViewEventWidget extends State<ViewEventWidget> {
+  //Properties
+  Event event;
+
+  //Constructors
+  _ViewEventWidget({this.event});
+
+  //Methods
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +70,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                     color: ColorObjects.primaryDark,
                     //Event Name Text
                     child: Text(
-                      "Improv",
+                      event.name,
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Staatliches',
@@ -70,7 +89,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                     padding: EdgeInsets.all(16),
                     color: ColorObjects.primaryDark,
                     child: Text(
-                      "The participants will be given a topic on the spot she will have to pull out an act accordingly. The judgement will be based on spontaneity, sense of humor on the stage and stage presence.",
+                      event.longDescription,
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'JuliusSansOne',
@@ -101,7 +120,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                       right: 16,
                     ),
                     child: Text(
-                      "Old CDX",
+                      event.venue != null ? event.venue : "",
                       style: TextStyle(
                         fontFamily: 'Staatliches',
                         fontSize: 20,
@@ -128,7 +147,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                       right: 16,
                     ),
                     child: Text(
-                      "14th Feb, 6 PM",
+                      event.dateTime != null ? event.dateTime : "",
                       style: TextStyle(
                         fontFamily: 'Staatliches',
                         fontSize: 20,
@@ -154,7 +173,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Text(
-                      "Mike Tyson (+911)",
+                      "${event.ec1Name} (${event.ec1Phone})",
                       style: TextStyle(
                         fontFamily: 'Staatliches',
                         fontSize: 20,
@@ -165,7 +184,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                   Container(
                     margin: EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Text(
-                      "Osama Yomama (+811)",
+                      "${event.ec2Name} (${event.ec2Phone})",
                       style: TextStyle(
                         fontFamily: 'Staatliches',
                         fontSize: 20,
@@ -193,7 +212,17 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                         Icons.chrome_reader_mode,
                         color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        //open register_participant screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (buildContext) {
+                              return RegisterParticipantWidget();
+                            },
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

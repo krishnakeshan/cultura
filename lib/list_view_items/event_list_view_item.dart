@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'package:cultura/model/event.dart';
+
 import 'package:cultura/view_event.dart';
 
 class EventListViewItem extends StatelessWidget {
+  //Properties
+  final Event event;
+
+  //Constructors
+  EventListViewItem({this.event});
+
+  //Methods
   @override
   Widget build(buildContext) {
     return GestureDetector(
@@ -20,7 +29,7 @@ class EventListViewItem extends StatelessWidget {
             children: <Widget>[
               //Event Title Text
               Text(
-                "Improv",
+                event.name,
                 style: TextStyle(
                   fontFamily: 'Staatliches',
                   fontSize: 18,
@@ -31,7 +40,7 @@ class EventListViewItem extends StatelessWidget {
                 margin: EdgeInsets.only(top: 4),
                 child: Text(
                   //Event Description Text
-                  "There is nothing like preparation",
+                  event.description,
                   style: TextStyle(color: Colors.blueGrey),
                 ),
               ),
@@ -45,7 +54,9 @@ class EventListViewItem extends StatelessWidget {
           buildContext,
           MaterialPageRoute(
             builder: (buildContext) {
-              return ViewEventWidget();
+              return ViewEventWidget(
+                event: event,
+              );
             },
           ),
         );

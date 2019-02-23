@@ -16,6 +16,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.yellow,
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -128,7 +129,7 @@ class HomePage extends StatelessWidget {
               buildContext,
               MaterialPageRoute(
                 builder: (buildContext) {
-                  return RegisterParticipantWidget();
+                  return VolunteerLoginWidget();
                 },
               ),
             );
@@ -160,8 +161,8 @@ class HomePage extends StatelessWidget {
                 ),
                 elevation: 8,
                 margin: EdgeInsets.all(24),
-                child: Image.network(
-                  "https://cdn.pixabay.com/photo/2016/11/22/19/15/audience-1850119_960_720.jpg",
+                child: Image.asset(
+                  "assets/headliners.jpg",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -176,7 +177,7 @@ class HomePage extends StatelessWidget {
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          "1. HEADLINERS",
+                          "HEADLINERS",
                           style: TextStyle(
                             fontFamily: 'Staatliches',
                             fontSize: 28,
@@ -231,8 +232,8 @@ class HomePage extends StatelessWidget {
                       ),
                       elevation: 8,
                       margin: EdgeInsets.all(24),
-                      child: Image.network(
-                        "https://cdn.pixabay.com/photo/2017/08/01/14/51/concert-2566002_960_720.jpg",
+                      child: Image.asset(
+                        "assets/events.jpg",
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -247,7 +248,7 @@ class HomePage extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(
-                                "2. EVENTS",
+                                "EVENTS",
                                 style: TextStyle(
                                   fontFamily: 'Staatliches',
                                   fontSize: 28,
@@ -290,45 +291,6 @@ class HomePage extends StatelessWidget {
       },
     );
 
-    //Register Widget
-    Widget registerWidget = Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 8,
-      margin: EdgeInsets.symmetric(
-        horizontal: 40,
-        vertical: 50,
-      ),
-      color: Colors.yellow,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Icon(
-                Icons.chrome_reader_mode,
-                size: 128,
-                color: ColorObjects.primaryDark,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "3. Register",
-                  style: TextStyle(
-                    fontFamily: 'Staatliches',
-                    fontSize: 28,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
     //Sponsors Widget
     Widget sponsorsWidget = Card(
       shape: RoundedRectangleBorder(
@@ -355,7 +317,7 @@ class HomePage extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  "4. Sponsors",
+                  "Sponsors",
                   style: TextStyle(
                     fontFamily: 'Staatliches',
                     fontSize: 28,
@@ -411,7 +373,6 @@ class HomePage extends StatelessWidget {
     widgets.add(welcomeWidget);
     widgets.add(headlinersWidget);
     widgets.add(eventsWidget);
-    widgets.add(registerWidget);
     widgets.add(sponsorsWidget);
     widgets.add(aboutWidget);
 

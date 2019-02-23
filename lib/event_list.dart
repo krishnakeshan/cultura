@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cultura/model/event_category.dart';
+import 'package:cultura/model/event.dart';
 import 'package:cultura/list_view_items/event_list_view_item.dart';
 
 class EventCategoriesWidget extends StatefulWidget {
@@ -9,6 +14,18 @@ class EventCategoriesWidget extends StatefulWidget {
 }
 
 class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
+  //Properties
+  List<EventCategory> eventCategories = List();
+  static const platformChannel = MethodChannel("in.ac.cmrit.cultura/main");
+
+  //Methods
+  @override
+  void initState() {
+    super.initState();
+
+    _getEventCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,21 +56,20 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
                     ),
                   ),
                   Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
+                    child: GridView.builder(
                       padding: EdgeInsets.zero,
-                      children: <Widget>[
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                        EventCategoryItem(),
-                      ],
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                      ),
+                      itemBuilder: (buildContext, index) {
+                        return EventCategoryItem(
+                          categoryId: eventCategories[index].objectId,
+                          name: eventCategories[index].name,
+                        );
+                      },
+                      itemCount: eventCategories.length,
                     ),
                   ),
                 ],
@@ -64,9 +80,35 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
       ),
     );
   }
+
+  //method to get event categories
+  Future<void> _getEventCategories() async {
+    //result contains the event category object maps
+    var result = await platformChannel.invokeMethod("getEventCategories");
+
+    //process each category event
+    for (var categoryObjectMap in result) {
+      print("processing event category");
+      EventCategory eventCategory =
+          EventCategory.fromMap(map: categoryObjectMap);
+
+      //call setState
+      setState(() {
+        this.eventCategories.add(eventCategory);
+      });
+    }
+  }
 }
 
 class EventCategoryItem extends StatelessWidget {
+  //Properties
+  final String categoryId;
+  final String name;
+
+  //Constructors
+  EventCategoryItem({this.categoryId, this.name});
+
+  //Methods
   @override
   Widget build(buildContext) {
     return GestureDetector(
@@ -90,11 +132,12 @@ class EventCategoryItem extends StatelessWidget {
                 alignment: Alignment.center,
                 color: Color.fromARGB(150, 0, 0, 0),
                 child: Text(
-                  "Theatre",
+                  name,
+                  maxLines: 1,
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Staatliches',
-                    fontSize: 26,
+                    fontSize: 24,
                   ),
                 ),
               ),
@@ -107,7 +150,9 @@ class EventCategoryItem extends StatelessWidget {
           buildContext,
           MaterialPageRoute(
             builder: (buildContext) {
-              return EventListWidget();
+              return EventListWidget(
+                categoryId: this.categoryId,
+              );
             },
           ),
         );
@@ -117,13 +162,37 @@ class EventCategoryItem extends StatelessWidget {
 }
 
 class EventListWidget extends StatefulWidget {
+  //Properties
+  final String categoryId;
+
+  //Constructors
+  EventListWidget({this.categoryId});
+
+  //Methods
   @override
   _EventListWidgetState createState() {
-    return _EventListWidgetState();
+    return _EventListWidgetState(categoryId: this.categoryId);
   }
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
+  //Properties
+  String categoryId;
+  List<Event> events = List();
+  static const platformChannel = MethodChannel("in.ac.cmrit.cultura/main");
+
+  //Constructors
+  _EventListWidgetState({this.categoryId});
+
+  //Methods
+  @override
+  void initState() {
+    super.initState();
+
+    //get event objects for this category
+    _getEvents();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,14 +220,37 @@ class _EventListWidgetState extends State<EventListWidget> {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: 10,
+              itemCount: events.length,
               itemBuilder: (buildContext, index) {
-                return EventListViewItem();
+                return EventListViewItem(
+                  event: events[index],
+                );
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  //method to get event objects for a category
+  Future<void> _getEvents() async {
+    var eventMaps = await platformChannel.invokeMethod(
+      "getEventsForCategory",
+      <String, dynamic>{
+        "categoryId": this.categoryId,
+      },
+    );
+
+    print("got events ${eventMaps.length}");
+
+    for (var eventMap in eventMaps) {
+      Event event = Event.fromMap(map: eventMap);
+
+      //call setState
+      setState(() {
+        this.events.add(event);
+      });
+    }
   }
 }
