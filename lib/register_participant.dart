@@ -1,21 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:cultura/model/event.dart';
+
+import 'package:cultura/qr_codes.dart';
+
 class RegisterParticipantWidget extends StatefulWidget {
   //Properties
+  final Event event;
+
+  //Constructors
+  RegisterParticipantWidget({this.event});
 
   //Methods
   @override
   _RegisterParticipantWidget createState() {
-    return _RegisterParticipantWidget();
+    return _RegisterParticipantWidget(event: event);
   }
 }
 
 class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
   //Properties
+  Event event;
+  TextEditingController receiptController;
+  TextEditingController nameController;
+  TextEditingController phoneController;
+  TextEditingController emailController;
+  TextEditingController collegeController;
   static const platformChannel = MethodChannel("in.ac.cmrit.cultura/main");
 
+  //Constructors
+  _RegisterParticipantWidget({this.event});
+
   //Methods
+  @override
+  void initState() {
+    super.initState();
+
+    //initialize text controllers
+    receiptController = TextEditingController();
+    nameController = TextEditingController();
+    phoneController = TextEditingController();
+    emailController = TextEditingController();
+    collegeController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +56,29 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
       body: ListView(
         padding: EdgeInsets.all(16),
         children: <Widget>[
+          //Receipt Text Field
+          TextField(
+            controller: collegeController,
+            decoration: InputDecoration(
+              hintText: "Receipt No.",
+            ),
+            maxLines: 1,
+            textCapitalization: TextCapitalization.words,
+          ),
+
           //Participant Name Text Field
           TextField(
+            controller: nameController,
             decoration: InputDecoration(
               hintText: "Name",
             ),
             maxLines: 1,
+            textCapitalization: TextCapitalization.words,
           ),
 
           //Participant Phone Text Field
           TextField(
+            controller: phoneController,
             decoration: InputDecoration(
               hintText: "Phone",
             ),
@@ -46,6 +88,7 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
 
           //Participant Email Text Field
           TextField(
+            controller: emailController,
             decoration: InputDecoration(
               hintText: "Email",
             ),
@@ -53,12 +96,14 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
             maxLines: 1,
           ),
 
-          //Participant Email Text Field
+          //Participant College Name Text Field
           TextField(
+            controller: collegeController,
             decoration: InputDecoration(
               hintText: "College Name",
             ),
             maxLines: 1,
+            textCapitalization: TextCapitalization.words,
           ),
 
           //Payment Methods Title
@@ -75,14 +120,23 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
 
           //Cash Payment Button
           RaisedButton(
+            color: Colors.green,
             child: Text(
               "CASH",
               style: TextStyle(
                 color: Colors.white,
               ),
             ),
-            color: Colors.black,
             onPressed: () {
+              //call platform method to register if all values entered
+              if (receiptController.text.isEmpty ||
+                  nameController.text.isEmpty ||
+                  phoneController.text.isEmpty ||
+                  emailController.text.isEmpty ||
+                  collegeController.text.isEmpty) {
+                return false;
+              }
+
               //show a dialog asking to receive cash
               return showDialog(
                 context: context,
@@ -109,13 +163,18 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
                         },
                       ),
                       //Finish Registration Flat Button
-                      FlatButton(
+                      RaisedButton(
+                        color: Colors.blue,
                         child: Text(
                           "Finish Registration",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                         onPressed: () {
                           //call function to save registration
+                          _registerParticipant(context);
+                          Navigator.pop(buildContext);
                         },
                       ),
                     ],
@@ -134,10 +193,112 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
               ),
             ),
             color: Colors.black,
-            onPressed: () {},
+            onPressed: () {
+              //open qr codes screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (buildContext) {
+                    return QRCodesScreen();
+                  },
+                ),
+              );
+            },
           ),
         ],
       ),
+    );
+  }
+
+  //method to register this participant
+  Future<void> _registerParticipant(BuildContext buildContext) async {
+    var success = await platformChannel.invokeMethod(
+      "registerParticipant",
+      {
+        "receipt": receiptController.text,
+        "name": nameController.text,
+        "phone": phoneController.text,
+        "email": emailController.text,
+        "college": collegeController.text,
+        "eventId": event.objectId,
+        "eventName": event.name
+      },
+    );
+
+    //registration was successful, show dialog
+    if (success) {
+      showDialog(
+        context: buildContext,
+        barrierDismissible: true,
+        builder: (buildContext) {
+          return AlertDialog(
+            title: Text(
+              "Registration Successful",
+              style: TextStyle(
+                color: Colors.green,
+              ),
+            ),
+            actions: <Widget>[
+              RaisedButton(
+                color: Colors.green,
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  //close this
+                  Navigator.pop(buildContext);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    //registration unsuccessful, show dialog
+    else {
+      showDialog(
+        context: buildContext,
+        barrierDismissible: true,
+        builder: (buildContext) {
+          return AlertDialog(
+            title: Text(
+              "Registration Not Successful",
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            content: Text("Please try again"),
+            actions: <Widget>[
+              RaisedButton(
+                color: Colors.green,
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  //close this
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  //method to open registration link for this event
+  //method to open link
+  Future<void> _openRegistrationLink(String link) async {
+    await platformChannel.invokeMethod(
+      "openRegistrationLink",
+      {
+        "regLink": link,
+      },
     );
   }
 }

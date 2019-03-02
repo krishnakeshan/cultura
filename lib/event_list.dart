@@ -8,6 +8,9 @@ import 'package:cultura/model/event.dart';
 import 'package:cultura/list_view_items/event_list_view_item.dart';
 
 class EventCategoriesWidget extends StatefulWidget {
+  //Properties
+
+  //Methods
   _EventCategoriesWidgetState createState() {
     return _EventCategoriesWidgetState();
   }
@@ -65,8 +68,7 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
                       ),
                       itemBuilder: (buildContext, index) {
                         return EventCategoryItem(
-                          categoryId: eventCategories[index].objectId,
-                          name: eventCategories[index].name,
+                          eventCategory: eventCategories[index],
                         );
                       },
                       itemCount: eventCategories.length,
@@ -102,11 +104,10 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
 
 class EventCategoryItem extends StatelessWidget {
   //Properties
-  final String categoryId;
-  final String name;
+  final EventCategory eventCategory;
 
   //Constructors
-  EventCategoryItem({this.categoryId, this.name});
+  EventCategoryItem({this.eventCategory});
 
   //Methods
   @override
@@ -121,8 +122,8 @@ class EventCategoryItem extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-              child: Image.network(
-                "https://cdn.pixabay.com/photo/2017/08/01/14/51/concert-2566002_960_720.jpg",
+              child: Image.asset(
+                "assets/events.jpg",
                 fit: BoxFit.cover,
               ),
             ),
@@ -132,7 +133,7 @@ class EventCategoryItem extends StatelessWidget {
                 alignment: Alignment.center,
                 color: Color.fromARGB(150, 0, 0, 0),
                 child: Text(
-                  name,
+                  eventCategory.name,
                   maxLines: 1,
                   style: TextStyle(
                     color: Colors.white,
@@ -151,7 +152,7 @@ class EventCategoryItem extends StatelessWidget {
           MaterialPageRoute(
             builder: (buildContext) {
               return EventListWidget(
-                categoryId: this.categoryId,
+                eventCategory: eventCategory,
               );
             },
           ),
@@ -163,31 +164,38 @@ class EventCategoryItem extends StatelessWidget {
 
 class EventListWidget extends StatefulWidget {
   //Properties
-  final String categoryId;
+  final EventCategory eventCategory;
 
   //Constructors
-  EventListWidget({this.categoryId});
+  EventListWidget({this.eventCategory});
 
   //Methods
   @override
   _EventListWidgetState createState() {
-    return _EventListWidgetState(categoryId: this.categoryId);
+    return _EventListWidgetState(
+      eventCategory: this.eventCategory,
+    );
   }
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
   //Properties
-  String categoryId;
+  bool gotVolunteerMode = false;
+  bool volunteerMode = false;
+  EventCategory eventCategory;
   List<Event> events = List();
   static const platformChannel = MethodChannel("in.ac.cmrit.cultura/main");
 
   //Constructors
-  _EventListWidgetState({this.categoryId});
+  _EventListWidgetState({this.eventCategory});
 
   //Methods
   @override
   void initState() {
     super.initState();
+
+    //get a value for volunteerMode
+    _getVolunteerMode();
 
     //get event objects for this category
     _getEvents();
@@ -209,7 +217,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             color: Colors.yellow,
             padding: EdgeInsets.all(8),
             child: Text(
-              "Art\nEvents",
+              "${eventCategory.name}\nEvents",
               style: TextStyle(
                 fontFamily: 'MajorMonoDisplay',
                 fontSize: 36,
@@ -223,6 +231,8 @@ class _EventListWidgetState extends State<EventListWidget> {
               itemCount: events.length,
               itemBuilder: (buildContext, index) {
                 return EventListViewItem(
+                  gotVolunteerMode: gotVolunteerMode,
+                  volunteerMode: volunteerMode,
                   event: events[index],
                 );
               },
@@ -238,11 +248,9 @@ class _EventListWidgetState extends State<EventListWidget> {
     var eventMaps = await platformChannel.invokeMethod(
       "getEventsForCategory",
       <String, dynamic>{
-        "categoryId": this.categoryId,
+        "categoryId": eventCategory.objectId,
       },
     );
-
-    print("got events ${eventMaps.length}");
 
     for (var eventMap in eventMaps) {
       Event event = Event.fromMap(map: eventMap);
@@ -252,5 +260,17 @@ class _EventListWidgetState extends State<EventListWidget> {
         this.events.add(event);
       });
     }
+  }
+
+  //method to check if a volunteer is logged in or not
+  Future<void> _getVolunteerMode() async {
+    print("getting volunteer mode");
+    var loggedIn = await platformChannel.invokeMethod("getVolunteerMode");
+    print("got volunteer mode $loggedIn");
+
+    setState(() {
+      this.gotVolunteerMode = true;
+      this.volunteerMode = loggedIn;
+    });
   }
 }

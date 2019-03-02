@@ -11,6 +11,7 @@ class Event {
   String ec2Phone;
   int registration;
   String dateTime;
+  String regLink;
 
   //Constructors
   Event.fromMap({var map}) {
@@ -25,5 +26,6 @@ class Event {
     ec2Phone = map["ec2Phone"];
     registration = map["registration"];
     dateTime = map["dateAndTime"];
+    regLink = map["regLink"];
   }
 }

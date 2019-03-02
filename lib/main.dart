@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:cultura/register_participant.dart';
 import 'package:cultura/volunteer_login.dart';
 import 'package:cultura/event_list.dart';
 
@@ -21,8 +20,35 @@ class App extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   //Methods
+  @override
+  _HomePageState createState() {
+    return _HomePageState();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+  //Properties
+  PageController pageController;
+
+  //Methods
+  @override
+  void initState() {
+    super.initState();
+
+    //initialize page view
+    pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    //dispose page controller
+    pageController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +66,7 @@ class HomePage extends StatelessWidget {
             Positioned.fill(
               child: Container(
                 child: PageView(
+                  controller: pageController,
                   children: _getMainMenuItems(),
                 ),
               ),
@@ -86,39 +113,53 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 24),
-                    child: Card(
-                      elevation: 8,
-                      color: ColorObjects.primaryDark,
-                      shape: StadiumBorder(),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              "Swipe to Explore",
-                              style: TextStyle(
-                                color: Colors.white,
+
+                  //Swipe To Explore Button
+                  GestureDetector(
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 24),
+                      child: Card(
+                        elevation: 8,
+                        color: ColorObjects.primaryDark,
+                        shape: StadiumBorder(),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                "Swipe to Explore",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 4),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: Colors.white,
-                                size: 16,
+                              Container(
+                                margin: EdgeInsets.only(left: 4),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
+                    onTap: () {
+                      print("calling onTap");
+                      pageController.animateToPage(
+                        2,
+                        curve: Curves.elasticIn,
+                        duration: Duration(
+                          seconds: 1,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

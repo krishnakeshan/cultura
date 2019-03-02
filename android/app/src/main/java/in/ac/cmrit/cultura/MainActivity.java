@@ -1,16 +1,21 @@
 package in.ac.cmrit.cultura;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
 import com.parse.Parse;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,22 +39,70 @@ public class MainActivity extends FlutterActivity {
             public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
                 //method to get all event categories
                 if (methodCall.method.equals("getEventCategories")) {
-                    //create query
-                    ParseQuery<ParseObject> eventCategoriesQuery = ParseQuery.getQuery("EventCategory");
+                    //get an object converter
+                    final ObjectConverter objectConverter = new ObjectConverter();
+
+                    //first check offline
+                    final ParseQuery<ParseObject> eventCategoriesQuery = ParseQuery.getQuery("EventCategory");
+                    eventCategoriesQuery.fromPin("eventCategories");
                     eventCategoriesQuery.findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> objects, ParseException e) {
                             if (e == null) {
-                                ObjectConverter objectConverter = new ObjectConverter();
+                                //query executed, check if anything was found
+                                if (!objects.isEmpty()) {
+                                    //objects found offline, return these
+                                    //create an array of compatible representations
+                                    ArrayList<HashMap> categoryObjects = new ArrayList<>();
+                                    for (ParseObject categoryObject : objects) {
+                                        categoryObjects.add(objectConverter.parseObjectToMap(categoryObject));
+                                    }
 
-                                //create an array of compatible representations
-                                ArrayList<HashMap> categoryObjects = new ArrayList<>();
-                                for (ParseObject categoryObject : objects) {
-                                    categoryObjects.add(objectConverter.parseObjectToMap(categoryObject));
+                                    //in the background get newer results from server
+                                    eventCategoriesQuery.fromNetwork();
+                                    eventCategoriesQuery.findInBackground(new FindCallback<ParseObject>() {
+                                        @Override
+                                        public void done(List<ParseObject> objects, ParseException e) {
+                                            //query executed, now pin newer results for later use
+                                            if (e == null) {
+                                                ParseObject.pinAllInBackground("eventCategories", objects);
+                                            }
+                                        }
+                                    });
+
+                                    //return result
+                                    result.success(categoryObjects);
                                 }
 
-                                //return result
-                                result.success(categoryObjects);
+                                //no objects found offline, get from server
+                                else {
+
+                                    eventCategoriesQuery.fromNetwork();
+                                    eventCategoriesQuery.findInBackground(new FindCallback<ParseObject>() {
+                                        @Override
+                                        public void done(final List<ParseObject> objects, ParseException e) {
+                                            if (e == null) {
+                                                //got event categories from server, pin them
+                                                ParseObject.pinAllInBackground("eventCategories", objects, new SaveCallback() {
+                                                    @Override
+                                                    public void done(ParseException e) {
+                                                        if (e == null) {
+                                                            //pinned, now return these
+                                                            //create an array of compatible representations
+                                                            ArrayList<HashMap> categoryObjects = new ArrayList<>();
+                                                            for (ParseObject categoryObject : objects) {
+                                                                categoryObjects.add(objectConverter.parseObjectToMap(categoryObject));
+                                                            }
+
+                                                            //return result
+                                                            result.success(categoryObjects);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -93,7 +146,6 @@ public class MainActivity extends FlutterActivity {
                         @Override
                         public void done(ParseUser user, ParseException e) {
                             if (e == null) {
-                                Log.d("debugk", "logged in user " + user.getString("accountType"));
                                 result.success(user.getString("accountType"));
                             }
                         }
@@ -102,21 +154,78 @@ public class MainActivity extends FlutterActivity {
 
                 //method to log out user
                 else if (methodCall.method.equals("logOutUser")) {
-                    //log out user and return status
-                    ParseUser.logOutInBackground(new LogOutCallback() {
+                    //if there's a user logged in, log them out
+                    if (ParseUser.getCurrentUser() != null) {
+                        ParseUser.logOutInBackground(new LogOutCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                //user logged out, return true
+                                if (e == null) {
+                                    result.success(true);
+                                }
+
+                                //error logging user out, return false
+                                else result.success(false);
+                            }
+                        });
+                    }
+
+                    //there's no user logged in return false
+                    else {
+                        result.success(false);
+                    }
+                }
+
+                //method to get logged in status
+                else if (methodCall.method.equals("getVolunteerMode")) {
+                    if (ParseUser.getCurrentUser() != null) {
+                        result.success(true);
+                    } else {
+                        result.success(false);
+                    }
+                }
+
+                //method to register a participant
+                else if (methodCall.method.equals("registerParticipant")) {
+                    Log.d("DebugK", "Registering Someone");
+                    //create params for calling cloud function
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("receipt", methodCall.argument("receipt"));
+                    params.put("name", methodCall.argument("name"));
+                    params.put("phone", methodCall.argument("phone"));
+                    params.put("email", methodCall.argument("email"));
+                    params.put("eventId", methodCall.argument("eventId"));
+                    params.put("eventName", methodCall.argument("eventName"));
+                    params.put("college", methodCall.argument("college"));
+                    params.put("volunteerId", ParseUser.getCurrentUser().getObjectId());
+                    params.put("volunteerName", ParseUser.getCurrentUser().getString("name"));
+
+                    //call cloud function
+                    ParseCloud.callFunctionInBackground("registerParticipantForEvent", params, new FunctionCallback<Boolean>() {
                         @Override
-                        public void done(ParseException e) {
+                        public void done(Boolean object, ParseException e) {
+                            //registration mostly went through, return status
                             if (e == null) {
-                                Log.d("DebugK", "Logged user out");
-                                result.success(true);
+                                //return status
+                                Log.d("DebugK", "Registered " + object);
+                                result.success(object);
+                            }
+
+                            //registration not successful, return status
+                            else {
+                                Log.d("DebugK", "Error Registering " + e.toString());
+                                result.success(false);
                             }
                         }
                     });
                 }
 
-                //method to register a participant
-                else if (methodCall.method.equals("registerParticipant")) {
-
+                //method to open registration web link
+                else if (methodCall.method.equals("openRegistrationLink")) {
+                    String registrationLink = methodCall.argument("regLink");
+                    Intent registerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(registrationLink));
+                    startActivity(registerIntent);
+                    result.success("done");
                 }
             }
         });

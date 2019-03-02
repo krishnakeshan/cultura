@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:cultura/model/event.dart';
 
-import 'package:cultura/view_event.dart';
+import 'package:cultura/register_participant.dart';
 
 class EventListViewItem extends StatelessWidget {
   //Properties
+  final bool gotVolunteerMode;
+  final bool volunteerMode;
   final Event event;
+  final MethodChannel platform = MethodChannel("in.ac.cmrit.cultura/main");
 
   //Constructors
-  EventListViewItem({this.event});
+  EventListViewItem({this.gotVolunteerMode, this.volunteerMode, this.event});
 
   //Methods
   @override
@@ -49,17 +53,36 @@ class EventListViewItem extends StatelessWidget {
         ),
       ),
       onTap: () {
-        //open ViewEventWidget
-        Navigator.push(
-          buildContext,
-          MaterialPageRoute(
-            builder: (buildContext) {
-              return ViewEventWidget(
-                event: event,
-              );
-            },
-          ),
-        );
+        //if it's volunteer mode, open registration screen
+        if (gotVolunteerMode && volunteerMode) {
+          Navigator.push(
+            buildContext,
+            MaterialPageRoute(
+              builder: (buildContext) {
+                return RegisterParticipantWidget(
+                  event: event,
+                );
+              },
+            ),
+          );
+        }
+
+        //else open registration web view link
+        else if (gotVolunteerMode && !volunteerMode) {
+          _openRegistrationLink(
+            event.regLink,
+          );
+        }
+      },
+    );
+  }
+
+  //method to open link
+  Future<void> _openRegistrationLink(String link) async {
+    await platform.invokeMethod(
+      "openRegistrationLink",
+      {
+        "regLink": link,
       },
     );
   }

@@ -25,45 +25,74 @@ class _VolunteerLoginWidgetState extends State<VolunteerLoginWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text(
           "Volunteer Login",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
       body: Scaffold(
-        body: Center(
-          child: Container(
-            padding: EdgeInsets.all(36),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "username",
-                  ),
-                  controller: usernameTextController,
+        body: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(36),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "username",
                 ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "password",
-                  ),
-                  controller: passwordTextController,
+                controller: usernameTextController,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "password",
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 16),
-                  child: RaisedButton(
-                    child: Text("Login"),
-                    onPressed: () {
-                      //call method to log in user
-                      if (usernameTextController.text.isNotEmpty &&
-                          passwordTextController.text.isNotEmpty) {
-                        _logInUser(context);
-                      }
-                    },
+                controller: passwordTextController,
+              ),
+
+              //Login Button
+              Container(
+                margin: EdgeInsets.only(top: 16),
+                child: RaisedButton(
+                  color: Colors.green,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    //call method to log in user
+                    if (usernameTextController.text.isNotEmpty &&
+                        passwordTextController.text.isNotEmpty) {
+                      _logInUser(context);
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+
+              //Log out Button
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: RaisedButton(
+                  color: Colors.red,
+                  child: Text(
+                    "Log Out Current Account",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    //call method to log out user
+                    _logOutUser(context);
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -104,6 +133,16 @@ class _VolunteerLoginWidgetState extends State<VolunteerLoginWidget> {
           },
         ),
       );
+    }
+  }
+
+  //method to log out user
+  Future<void> _logOutUser(BuildContext buildContext) async {
+    var result = await platformChannel.invokeMethod("logOutUser");
+
+    //close this screen if user was logged out
+    if (result) {
+      Navigator.pop(buildContext);
     }
   }
 }

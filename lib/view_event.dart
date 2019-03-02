@@ -218,7 +218,7 @@ class _ViewEventWidget extends State<ViewEventWidget> {
                           context,
                           MaterialPageRoute(
                             builder: (buildContext) {
-                              return RegisterParticipantWidget();
+                              //open web view with payment link
                             },
                           ),
                         );
