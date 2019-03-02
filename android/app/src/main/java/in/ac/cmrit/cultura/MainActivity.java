@@ -113,6 +113,8 @@ public class MainActivity extends FlutterActivity {
                     //get category id
                     String categoryId = methodCall.argument("categoryId");
 
+                    //
+
                     //create query
                     ParseQuery<ParseObject> eventsQuery = ParseQuery.getQuery("Event");
                     eventsQuery.whereEqualTo("categoryId", categoryId);

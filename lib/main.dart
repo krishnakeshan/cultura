@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cultura/volunteer_login.dart';
 import 'package:cultura/event_list.dart';
+import 'package:cultura/about_cultura.dart';
 
 void main() => runApp(App());
 
@@ -372,42 +373,54 @@ class _HomePageState extends State<HomePage> {
     );
 
     //About Widget
-    Widget aboutWidget = Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 8,
-      margin: EdgeInsets.symmetric(
-        horizontal: 40,
-        vertical: 50,
-      ),
-      color: Colors.yellow,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Icon(
-                Icons.info,
-                size: 128,
-                color: ColorObjects.primaryDark,
+    Widget aboutWidget = GestureDetector(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 8,
+        margin: EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 50,
+        ),
+        color: Colors.yellow,
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: Icon(
+                  Icons.info,
+                  size: 128,
+                  color: ColorObjects.primaryDark,
+                ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "About Cultura",
-                  style: TextStyle(
-                    fontFamily: 'Staatliches',
-                    fontSize: 28,
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "About Cultura",
+                    style: TextStyle(
+                      fontFamily: 'Staatliches',
+                      fontSize: 28,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (buildContext) {
+              return AboutCulturaWidget();
+            },
+          ),
+        );
+      },
     );
 
     //add all created widgets to list
