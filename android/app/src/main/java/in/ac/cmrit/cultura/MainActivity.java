@@ -189,7 +189,6 @@ public class MainActivity extends FlutterActivity {
 
                 //method to register a participant
                 else if (methodCall.method.equals("registerParticipant")) {
-                    Log.d("DebugK", "Registering Someone");
                     //create params for calling cloud function
                     HashMap<String, Object> params = new HashMap<>();
                     params.put("receipt", methodCall.argument("receipt"));
@@ -209,13 +208,11 @@ public class MainActivity extends FlutterActivity {
                             //registration mostly went through, return status
                             if (e == null) {
                                 //return status
-                                Log.d("DebugK", "Registered " + object);
                                 result.success(object);
                             }
 
                             //registration not successful, return status
                             else {
-                                Log.d("DebugK", "Error Registering " + e.toString());
                                 result.success(false);
                             }
                         }
@@ -228,6 +225,28 @@ public class MainActivity extends FlutterActivity {
                     Intent registerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(registrationLink));
                     startActivity(registerIntent);
                     result.success("done");
+                }
+
+                //method to get sponsors list
+                else if (methodCall.method.equals("getSponsors")) {
+                    ParseQuery<ParseObject> sponsorsQuery = ParseQuery.getQuery("Sponsor");
+                    sponsorsQuery.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> objects, ParseException e) {
+                            if (e == null) {
+                                //found all sponsors, convert and return
+                                ObjectConverter objectConverter = new ObjectConverter();
+                                ArrayList<HashMap<String, Object>> sponsors = new ArrayList<>();
+
+                                for (ParseObject sponsor : objects) {
+                                    sponsors.add(objectConverter.parseObjectToMap(sponsor));
+                                }
+
+                                //return list
+                                result.success(sponsors);
+                            }
+                        }
+                    });
                 }
             }
         });

@@ -42,9 +42,15 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/background.png
-    - assets/black_background.png
+    - assets/dark_background.png
     - assets/headliners.jpg
     - assets/events.jpg
+    - assets/mbo_front.jpg
+    - assets/mbo_side.jpg
+    - assets/chorus_logo.png
+    - assets/elements_logo.png
+    - assets/bhim_upi.png
+    - assets/paytm.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:cultura/volunteer_login.dart';
 import 'package:cultura/event_list.dart';
+import 'package:cultura/headliner.dart';
+import 'package:cultura/sponsors_list.dart';
 import 'package:cultura/about_cultura.dart';
 
 void main() => runApp(App());
@@ -152,7 +154,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onTap: () {
-                      print("calling onTap");
                       pageController.animateToPage(
                         2,
                         curve: Curves.elasticIn,
@@ -181,71 +182,81 @@ class _HomePageState extends State<HomePage> {
     );
 
     //Headliners Widget
-    Widget headlinersWidget = Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 8,
-      margin: EdgeInsets.symmetric(
-        horizontal: 40,
-        vertical: 50,
-      ),
-      color: Colors.yellow,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+    Widget headlinersWidget = GestureDetector(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 8,
+        margin: EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 50,
+        ),
+        color: Colors.yellow,
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 8,
+                  margin: EdgeInsets.all(24),
+                  child: Image.asset(
+                    "assets/headliners.jpg",
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                elevation: 8,
-                margin: EdgeInsets.all(24),
-                child: Image.asset(
-                  "assets/headliners.jpg",
-                  fit: BoxFit.cover,
-                ),
+                flex: 2,
               ),
-              flex: 2,
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "HEADLINERS",
-                          style: TextStyle(
-                            fontFamily: 'Staatliches',
-                            fontSize: 28,
-                            color: Colors.black,
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "HEADLINERS",
+                            style: TextStyle(
+                              fontFamily: 'Staatliches',
+                              fontSize: 28,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 24),
-                      child: Text(
-                        "tap to know more",
-                        style: TextStyle(
-                          fontFamily: 'Staatliches',
-                          fontSize: 12,
+                      Container(
+                        margin: EdgeInsets.only(bottom: 24),
+                        child: Text(
+                          "tap to know more",
+                          style: TextStyle(
+                            fontFamily: 'Staatliches',
+                            fontSize: 12,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                flex: 1,
               ),
-              flex: 1,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (buildContext) {
+            return HeadlinerScreen();
+          }),
+        );
+      },
     );
 
     //Events Widget
@@ -334,42 +345,54 @@ class _HomePageState extends State<HomePage> {
     );
 
     //Sponsors Widget
-    Widget sponsorsWidget = Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 8,
-      margin: EdgeInsets.symmetric(
-        horizontal: 40,
-        vertical: 50,
-      ),
-      color: Colors.yellow,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Icon(
-                Icons.monetization_on,
-                size: 128,
-                color: ColorObjects.primaryDark,
+    Widget sponsorsWidget = GestureDetector(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 8,
+        margin: EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 50,
+        ),
+        color: Colors.yellow,
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: Icon(
+                  Icons.monetization_on,
+                  size: 128,
+                  color: ColorObjects.primaryDark,
+                ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "Sponsors",
-                  style: TextStyle(
-                    fontFamily: 'Staatliches',
-                    fontSize: 28,
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Sponsors",
+                    style: TextStyle(
+                      fontFamily: 'Staatliches',
+                      fontSize: 28,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (buildContext) {
+              return SponsorsListScreen();
+            },
+          ),
+        );
+      },
     );
 
     //About Widget

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'dart:async';
+
 import 'package:cultura/model/event.dart';
+import 'package:cultura/model/registration.dart';
 
 import 'package:cultura/qr_codes.dart';
 
@@ -58,12 +61,12 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
         children: <Widget>[
           //Receipt Text Field
           TextField(
-            controller: collegeController,
+            controller: receiptController,
             decoration: InputDecoration(
               hintText: "Receipt No.",
             ),
             maxLines: 1,
-            textCapitalization: TextCapitalization.words,
+            keyboardType: TextInputType.number,
           ),
 
           //Participant Name Text Field
@@ -194,15 +197,35 @@ class _RegisterParticipantWidget extends State<RegisterParticipantWidget> {
             ),
             color: Colors.black,
             onPressed: () {
-              //open qr codes screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (buildContext) {
-                    return QRCodesScreen();
-                  },
-                ),
-              );
+              //only open if none of the fields are empty
+              if (receiptController.text.isNotEmpty &&
+                  nameController.text.isNotEmpty &&
+                  phoneController.text.isNotEmpty &&
+                  emailController.text.isNotEmpty &&
+                  collegeController.text.isNotEmpty) {
+                //create a registration object
+                Registration registration = Registration(
+                  receipt: receiptController.text,
+                  name: nameController.text,
+                  phone: phoneController.text,
+                  email: emailController.text,
+                  college: collegeController.text,
+                  eventId: event.objectId,
+                  eventName: event.name,
+                );
+
+                //open qr codes screen and pass registration to it
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (buildContext) {
+                      return QRCodesScreen(
+                        registration: registration,
+                      );
+                    },
+                  ),
+                );
+              }
             },
           ),
         ],
