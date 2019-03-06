@@ -122,8 +122,8 @@ class EventCategoryItem extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-              child: Image.asset(
-                "assets/events.jpg",
+              child: Image.network(
+                eventCategory.imageURL,
                 fit: BoxFit.cover,
               ),
             ),

@@ -50,6 +50,50 @@ class AboutCulturaWidget extends StatelessWidget {
           Align(
             child: ClipOval(
               child: Image.network(
+                "https://crypticsocket.github.io/Cultura19/pics/KRISHNA(APP%20TEAM)2.jpg",
+                height: 120,
+                width: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          //Text for Team Mate name
+          Container(
+            margin: EdgeInsets.only(top: 16),
+            child: Text(
+              "Krishna",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontFamily: "JuliusSansOne",
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          //Container for Team Mate Description
+          Container(
+            margin: EdgeInsets.only(top: 8),
+            child: Text(
+              "Lead Developer\n(APP TEAM)",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.blueGrey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          //Small Divider
+          Divider(
+            height: 40,
+          ),
+
+          Align(
+            child: ClipOval(
+              child: Image.network(
                 "https://crypticsocket.github.io/Cultura19/pics/Kaiwalya(APP%20TEAM).jpg",
                 height: 120,
                 width: 120,
@@ -122,7 +166,7 @@ class AboutCulturaWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(top: 8),
             child: Text(
-              "UI/UX Design",
+              "Android Engineer",
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.blueGrey,
@@ -226,49 +270,6 @@ class AboutCulturaWidget extends StatelessWidget {
             height: 40,
           ),
 
-          //Align For Team Mate Image
-          Align(
-            child: ClipOval(
-              child: Image.network(
-                "https://crypticsocket.github.io/Cultura19/pics/KRISHNA(APP%20TEAM)2.jpg",
-                height: 120,
-                width: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          //Text for Team Mate name
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            child: Text(
-              "Krishna",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontFamily: "JuliusSansOne",
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          //Container for Team Mate Description
-          Container(
-            margin: EdgeInsets.only(top: 8, bottom: 20),
-            child: Text(
-              "Lead Developer\n(APP TEAM)",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.blueGrey,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          //Small Divider
-          Divider(),
-
           //Meet The Team Title
           Container(
             margin: EdgeInsets.only(top: 24),
@@ -348,7 +349,7 @@ class AboutCulturaWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(top: 16),
             child: Text(
-              "Dip",
+              "Dip (pokey)",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -408,62 +409,6 @@ class AboutCulturaWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 8),
             child: Text(
               "Web Dev",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.blueGrey,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          //Small Divider
-          Divider(
-            height: 40,
-          ),
-
-          Container(
-            margin: EdgeInsets.only(top: 16, bottom: 24),
-            child: Text(
-              "She Does Something",
-              style: TextStyle(
-                fontSize: 24,
-                fontFamily: "Staatliches",
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          Align(
-            child: ClipOval(
-              child: Image.network(
-                "https://crypticsocket.github.io/Cultura19/pics/CHANDRAMA(OC)2.jpg",
-                height: 120,
-                width: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          //Text for Team Mate name
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            child: Text(
-              "Moon",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontFamily: "JuliusSansOne",
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          //Container for Team Mate Description
-          Container(
-            margin: EdgeInsets.only(top: 8),
-            child: Text(
-              "Tech. Sec.",
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.blueGrey,

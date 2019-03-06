@@ -448,7 +448,7 @@ class _HomePageState extends State<HomePage> {
 
     //add all created widgets to list
     widgets.add(welcomeWidget);
-    widgets.add(headlinersWidget);
+    // widgets.add(headlinersWidget);
     widgets.add(eventsWidget);
     widgets.add(sponsorsWidget);
     widgets.add(aboutWidget);

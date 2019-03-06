@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.LogOutCallback;
 import com.parse.Parse;
@@ -225,6 +226,23 @@ public class MainActivity extends FlutterActivity {
                     Intent registerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(registrationLink));
                     startActivity(registerIntent);
                     result.success("done");
+                }
+
+                //method to open headliner link
+                else if (methodCall.method.equals("openHeadlinerLink")) {
+                    //get headliner registration link
+                    ParseQuery<ParseObject> headlinerQuery = ParseQuery.getQuery("Headliner");
+                    headlinerQuery.getFirstInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if (e == null) {
+                                String link = object.getString("registrationLink");
+                                Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                                startActivity(newIntent);
+                                result.success("done");
+                            }
+                        }
+                    });
                 }
 
                 //method to get sponsors list

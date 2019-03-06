@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'main.dart';
@@ -14,6 +15,8 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
   //Properties
   bool showFirst = true;
   Timer _timer;
+
+  MethodChannel platformChannel = MethodChannel("in.ac.cmrit.cultura/main");
 
   //Methods
   @override
@@ -53,8 +56,24 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
             child: ListView(
               children: <Widget>[
                 //Container for Notif Bar Padding
-                Container(
-                  height: MediaQuery.of(buildContext).padding.top,
+                // Container(
+                //   color: Colors.white,
+                //   height: MediaQuery.of(buildContext).padding.top,
+                // ),
+
+                //Little Back Button
+                GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 16, left: 16),
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(buildContext);
+                  },
                 ),
 
                 //Card for Image
@@ -122,37 +141,66 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
                   ),
                 ),
 
-                //Chorus Logo
+                //Event Date Text
                 Container(
-                  margin: EdgeInsets.all(32),
-                  child: Image.asset(
-                    "assets/chorus_logo.png",
+                  margin: EdgeInsets.only(left: 32, right: 32, top: 32),
+                  child: Text(
+                    "March 23",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontFamily: "JuliusSansOne",
+                    ),
                   ),
                 ),
 
-                // //Elements Logo
+                //Sunburn Campus Logo
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 32),
+                  child: Image.asset(
+                    "assets/sb_campus_logo.png",
+                  ),
+                ),
+
+                // //Chorus Logo
                 // Container(
-                //   margin: EdgeInsets.symmetric(horizontal: 32),
+                //   margin: EdgeInsets.only(left: 32, right: 32),
                 //   child: Image.asset(
-                //     "assets/elements_logo.png",
+                //     "assets/chorus_logo.png",
                 //   ),
                 // ),
 
-                //Buy Tickets Button
+                //Elements Logo
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-                  color: Colors.yellow,
-                  margin: EdgeInsets.only(left: 32, right: 32, bottom: 32),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "BUY PASSES",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: "JuliusSansOne",
-                      fontWeight: FontWeight.bold,
+                  margin: EdgeInsets.only(left: 32, right: 32),
+                  child: Image.asset(
+                    "assets/elements_logo.png",
+                  ),
+                ),
+
+                //Buy Tickets Button
+                GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                    color: Colors.yellow,
+                    margin: EdgeInsets.only(
+                        left: 32, right: 32, bottom: 32, top: 32),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "BUY PASSES",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontFamily: "JuliusSansOne",
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                  onTap: () {
+                    //open registration link
+                    platformChannel.invokeMethod("openHeadlinerLink");
+                  },
                 ),
               ],
             ),
