@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
+import 'package:carousel_slider/carousel_slider.dart';
+
 import 'main.dart';
 
 class HeadlinerScreen extends StatefulWidget {
@@ -30,16 +32,42 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
       ),
       (timer) {
         //call setState
-        setState(() {
-          showFirst = !showFirst;
-        });
+        if (mounted) {
+          setState(() {
+            showFirst = !showFirst;
+          });
+        }
       },
     );
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    //dispose timer
+    _timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        title: Text(
+          "HEADLINERS",
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'JuliusSansOne',
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Stack(
         children: <Widget>[
           //Image View For Backgronud
@@ -62,25 +90,73 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
                 // ),
 
                 //Little Back Button
-                GestureDetector(
-                  child: Container(
-                    padding: EdgeInsets.only(top: 16, left: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(buildContext);
-                  },
-                ),
+                // GestureDetector(
+                //   child: Container(
+                //     padding: EdgeInsets.only(top: 16, left: 16),
+                //     alignment: Alignment.centerLeft,
+                //     child: Icon(
+                //       Icons.arrow_back_ios,
+                //       color: Colors.white,
+                //     ),
+                //   ),
+                //   onTap: () {
+                //     Navigator.pop(buildContext);
+                //   },
+                // ),
 
                 //Card for Image
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                  child: AnimatedCrossFade(
-                    firstChild: Container(
+                // Container(
+                //   margin: EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                //   child: AnimatedCrossFade(
+                //     firstChild: Container(
+                //       height: 500,
+                //       child: Card(
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(8),
+                //         ),
+                //         clipBehavior: Clip.antiAlias,
+                //         color: Colors.transparent,
+                //         elevation: 16,
+                //         child: Image.asset(
+                //           "assets/mbo_front.jpg",
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ),
+                //     secondChild: Container(
+                //       height: 500,
+                //       child: Card(
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(8),
+                //         ),
+                //         clipBehavior: Clip.antiAlias,
+                //         color: Colors.transparent,
+                //         elevation: 16,
+                //         child: Image.asset(
+                //           "assets/mbo_side.jpg",
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ),
+                //     duration: Duration(
+                //       milliseconds: 600,
+                //     ),
+                //     crossFadeState: showFirst
+                //         ? CrossFadeState.showFirst
+                //         : CrossFadeState.showSecond,
+                //   ),
+                // ),
+
+                //Artist Images Carousel
+                CarouselSlider(
+                  height: 500,
+                  aspectRatio: 16 / 9,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  items: <Widget>[
+                    //first image
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 24),
                       height: 500,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -90,12 +166,14 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
                         color: Colors.transparent,
                         elevation: 16,
                         child: Image.asset(
-                          "assets/mbo_front.jpg",
+                          "assets/mnk1.jpeg",
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    secondChild: Container(
+
+                    //second image
+                    Container(
                       height: 500,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -105,18 +183,29 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
                         color: Colors.transparent,
                         elevation: 16,
                         child: Image.asset(
-                          "assets/mbo_side.jpg",
+                          "assets/mnk2.png",
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    duration: Duration(
-                      milliseconds: 600,
+
+                    //third image
+                    Container(
+                      height: 500,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        color: Colors.transparent,
+                        elevation: 16,
+                        child: Image.asset(
+                          "assets/mnk3.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                    crossFadeState: showFirst
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                  ),
+                  ],
                 ),
 
                 //Artist Name Text
@@ -131,7 +220,7 @@ class _HeadlinerScreenState extends State<HeadlinerScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   margin: EdgeInsets.only(top: 16, left: 32, right: 32),
                   child: Text(
-                    "Mariana Bo",
+                    "MASHD N KUTCHER",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.yellow,

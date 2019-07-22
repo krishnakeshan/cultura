@@ -32,6 +32,10 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
       body: Stack(
         children: <Widget>[
           Positioned.fill(
@@ -44,7 +48,8 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
           Positioned.fill(
             child: Container(
               margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              padding: EdgeInsets.all(30),
+              padding:
+                  EdgeInsets.only(left: 30, right: 30, top: 12, bottom: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -95,9 +100,11 @@ class _EventCategoriesWidgetState extends State<EventCategoriesWidget> {
           EventCategory.fromMap(map: categoryObjectMap);
 
       //call setState
-      setState(() {
-        this.eventCategories.add(eventCategory);
-      });
+      if (mounted) {
+        setState(() {
+          this.eventCategories.add(eventCategory);
+        });
+      }
     }
   }
 }
@@ -204,6 +211,10 @@ class _EventListWidgetState extends State<EventListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -213,7 +224,7 @@ class _EventListWidgetState extends State<EventListWidget> {
           ),
           //Event Category Text Container to give background
           Container(
-            margin: EdgeInsets.all(16),
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
             color: Colors.yellow,
             padding: EdgeInsets.all(8),
             child: Text(
@@ -256,9 +267,11 @@ class _EventListWidgetState extends State<EventListWidget> {
       Event event = Event.fromMap(map: eventMap);
 
       //call setState
-      setState(() {
-        this.events.add(event);
-      });
+      if (mounted) {
+        setState(() {
+          this.events.add(event);
+        });
+      }
     }
   }
 
@@ -268,9 +281,11 @@ class _EventListWidgetState extends State<EventListWidget> {
     var loggedIn = await platformChannel.invokeMethod("getVolunteerMode");
     print("got volunteer mode $loggedIn");
 
-    setState(() {
-      this.gotVolunteerMode = true;
-      this.volunteerMode = loggedIn;
-    });
+    if (mounted) {
+      setState(() {
+        this.gotVolunteerMode = true;
+        this.volunteerMode = loggedIn;
+      });
+    }
   }
 }

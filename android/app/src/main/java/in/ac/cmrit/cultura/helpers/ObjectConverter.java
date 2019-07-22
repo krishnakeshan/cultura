@@ -1,11 +1,7 @@
 package in.ac.cmrit.cultura.helpers;
 
-import android.util.Log;
-
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
-
-import org.json.JSONArray;
 
 import java.util.Date;
 import java.util.HashMap;

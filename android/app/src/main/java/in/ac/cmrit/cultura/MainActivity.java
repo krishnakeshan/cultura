@@ -237,6 +237,7 @@ public class MainActivity extends FlutterActivity {
                         public void done(ParseObject object, ParseException e) {
                             if (e == null) {
                                 String link = object.getString("registrationLink");
+                                Log.d("debugK", "opening link " + link);
                                 Intent newIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                                 startActivity(newIntent);
                                 result.success("done");

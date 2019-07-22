@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                   //Swipe To Explore Button
                   GestureDetector(
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 24),
+                      margin: EdgeInsets.only(left: 16, right: 16, bottom: 24),
                       child: Card(
                         elevation: 8,
                         color: ColorObjects.primaryDark,
@@ -132,20 +132,17 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
-                              Text(
-                                "Swipe to Explore",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 4),
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 16,
+                              Expanded(
+                                child: Text(
+                                  "Gates will be closed at 6PM sharp on 22nd, 23rd March for Cultura 2019",
+                                  maxLines: null,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ],
@@ -448,7 +445,7 @@ class _HomePageState extends State<HomePage> {
 
     //add all created widgets to list
     widgets.add(welcomeWidget);
-    // widgets.add(headlinersWidget);
+    widgets.add(headlinersWidget);
     widgets.add(eventsWidget);
     widgets.add(sponsorsWidget);
     widgets.add(aboutWidget);
